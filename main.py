@@ -2,7 +2,7 @@ import ffmpeg
 import os
 
 # Define input and output folders
-input_folder = './'
+input_folder = './'  # Current directory
 output_folder = './cleaned'
 
 # Create the output folder if it doesn't exist
@@ -14,6 +14,11 @@ for filename in os.listdir(input_folder):
     if filename.endswith(".mp4"):
         input_path = os.path.join(input_folder, filename)
         output_path = os.path.join(output_folder, filename)
+        
+        # Skip Existing Logic
+        if os.path.exists(output_path):
+            print(f"Skipping: {filename} (Already exists)")
+            continue
         
         # Shows file being processed
         print(f"Processing: {filename}...")
