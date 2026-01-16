@@ -1,13 +1,30 @@
 import ffmpeg
 import os
+import datetime
 
 # Define input and output folders
-input_folder = './'  # Current directory
-output_folder = './cleaned'
+input_folder = r''  # Current directory
+output_folder = r''
+total_seconds = 0
 
 # Create the output folder if it doesn't exist
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
+
+# Calculating the total duration
+print("Calculating total duration of all videos...")
+for filename in os.listdir(input_folder):
+    if filename.lower().endswith(".mp4"):
+        path = os.path.join(input_folder, filename)
+        try:
+            probe = ffmpeg.probe(path)
+            duration = float(probe['format']['duration'])
+            total_seconds += duration
+        except Exception:
+            pass
+        
+# Convert seconds to H:M:S format
+formatted_time = str(datetime.timedelta(seconds=int(total_seconds)))
 
 # Loop through all files in the input folder
 for filename in os.listdir(input_folder):
@@ -35,4 +52,6 @@ for filename in os.listdir(input_folder):
         except ffmpeg.Error as e:
             print(f"Error processing {filename}: {e.stderr}")
 
+print("-" * 30)
 print("All videos have been processed")
+print(f"Total duration of all source videos: {formatted_time}")
